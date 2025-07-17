@@ -4,6 +4,9 @@ import random
 from bubbleSort import bubble_sort
 from quicksort import quick_sort
 from mergesort import merge_sort
+from heapSort import heap_sort
+from insertionSort import insertion_sort
+from selectionSort import selection_sort
 
 root = Tk()
 root.title('Sorting Algorithm Visualisation')
@@ -22,7 +25,11 @@ def drawData(data, colorArray):
     x_width = c_width / (len(data) + 1)
     offset = 30
     spacing = 10
-    normalizedData = [ i / max(data) for i in data]
+    # Handle case where max(data) is 0 to avoid division by zero
+    max_val = max(data) if data else 1
+    if max_val == 0: max_val = 1
+    
+    normalizedData = [ i / max_val for i in data]
     for i, height in enumerate(normalizedData):
         #top left
         x0 = i * x_width + offset + spacing
@@ -62,7 +69,16 @@ def StartAlgorithm():
 
     elif algMenu.get() == 'Merge Sort':
         merge_sort(data, drawData, speedScale.get())
-    
+        
+    elif algMenu.get() == 'Heap Sort':
+        heap_sort(data, drawData, speedScale.get())
+
+    elif algMenu.get() == 'Insertion Sort':
+        insertion_sort(data, drawData, speedScale.get())
+
+    elif algMenu.get() == 'Selection Sort':
+        selection_sort(data, drawData, speedScale.get())
+
     drawData(data, ['green' for x in range(len(data))])
 
 
@@ -76,16 +92,16 @@ canvas.grid(row=1, column=0, padx=10, pady=5)
 #User Interface Area
 #Row[0]
 Label(UI_frame, text="Algorithm: ", bg='grey').grid(row=0, column=0, padx=5, pady=5, sticky=W)
-algMenu = ttk.Combobox(UI_frame, textvariable=selected_alg, values=['Bubble Sort', 'Quick Sort', 'Merge Sort'])
+algMenu = ttk.Combobox(UI_frame, textvariable=selected_alg, values=['Bubble Sort', 'Quick Sort', 'Merge Sort', 'Heap Sort', 'Insertion Sort', 'Selection Sort'])
 algMenu.grid(row=0, column=1, padx=5, pady=5)
 algMenu.current(0)
 
-speedScale = Scale(UI_frame, from_=0.1, to=5.0, length=200, digits=2, resolution=0.2, orient=HORIZONTAL, label="Select Speed [s]")
+speedScale = Scale(UI_frame, from_=0.1, to=2.0, length=200, digits=2, resolution=0.01, orient=HORIZONTAL, label="Select Speed [s]")
 speedScale.grid(row=0, column=2, padx=5, pady=5)
 Button(UI_frame, text="Start", command=StartAlgorithm, bg='red').grid(row=0, column=3, padx=5, pady=5)
 
 #Row[1]
-sizeEntry = Scale(UI_frame, from_=3, to=25, resolution=1, orient=HORIZONTAL, label="Data Size")
+sizeEntry = Scale(UI_frame, from_=3, to=30, resolution=1, orient=HORIZONTAL, label="Data Size")
 sizeEntry.grid(row=1, column=0, padx=5, pady=5)
 
 minEntry = Scale(UI_frame, from_=0, to=10, resolution=1, orient=HORIZONTAL, label="Min Value")
@@ -97,4 +113,3 @@ maxEntry.grid(row=1, column=2, padx=5, pady=5)
 Button(UI_frame, text="Generate", command=Generate, bg='white').grid(row=1, column=3, padx=5, pady=5)
 
 root.mainloop()
-
